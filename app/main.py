@@ -60,7 +60,7 @@ def approval_action(run_id: str, request: ApprovalDecisionRequest) -> dict[str, 
 
 
 @app.get("/runs/latest/trace")
-def latest_trace() -> dict[str, list[dict[str, object]]]:
+def latest_trace() -> dict[str, object]:
     latest = _load_latest_summary()
     if not TRACE_PATH.exists():
         raise HTTPException(status_code=404, detail="No workflow trace has been recorded yet.")
@@ -71,4 +71,7 @@ def latest_trace() -> dict[str, list[dict[str, object]]]:
     ]
     latest_run_id = latest["run_id"]
     filtered_events = [event for event in events if event["run_id"] == latest_run_id]
-    return {"events": filtered_events}
+    return {
+        "events": filtered_events,
+        "timing_summary": latest.get("timing_summary", {}),
+    }

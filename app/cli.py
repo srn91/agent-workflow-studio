@@ -16,6 +16,14 @@ def demo() -> None:
     )
     print(f"run_id={summary['run_id']}")
     print(f"status={summary['status']}")
+    timing_summary = summary["timing_summary"]
+    print(f"total_duration_ms={timing_summary['total_duration_ms']}")
+    print(
+        "slowest_step="
+        f"{timing_summary['slowest_step']['step']}"
+        f"#{timing_summary['slowest_step']['attempt']}"
+        f"({timing_summary['slowest_step']['duration_ms']}ms)"
+    )
     print(f"trace_path={TRACE_PATH.relative_to(TRACE_PATH.parent.parent)}")
     print(f"summary_path={SUMMARY_PATH.relative_to(SUMMARY_PATH.parent.parent)}")
 

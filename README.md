@@ -1,6 +1,6 @@
 # agent-workflow-studio
 
-`agent-workflow-studio` is a narrow workflow-orchestration demo for purchase-order exception triage. It shows how a supervisor/worker graph can route one business workflow through bounded local tools, one retry branch, one human approval gate, and an auditable execution trace.
+`agent-workflow-studio` is a narrow workflow-orchestration demo for purchase-order exception triage. It shows how a supervisor/worker graph can route one business workflow through bounded local tools, one retry branch, one human approval gate, and an auditable execution trace with per-step timing.
 
 ## Problem
 
@@ -53,6 +53,7 @@ This repo is the "Hello World" version of an agent workflow:
 - A single retry path demonstrates transient failure handling without pretending to solve distributed systems.
 - A first-class approval gate makes the stop condition explicit.
 - JSONL traces plus a small SQLite run log make the flow inspectable after execution.
+- Each persisted step now records attempt count, start/end timestamps, and per-step duration so slow or retry-heavy paths are easy to spot.
 
 ## Repository Layout
 
@@ -144,6 +145,14 @@ curl http://127.0.0.1:8005/runs/latest
 curl http://127.0.0.1:8005/runs/latest/trace
 ```
 
+The summary now includes a `timing_summary` block with:
+
+- total workflow duration
+- the slowest recorded step
+- a per-step list of attempt counts, statuses, and durations
+
+The trace endpoint returns both the filtered JSONL events and the same run-level timing summary.
+
 ## Hosted Deployment
 
 - Live URL: [agent-workflow-studio.onrender.com](https://agent-workflow-studio.onrender.com)
@@ -166,6 +175,8 @@ The tests cover:
 - manual approval resolution through the API
 - reject path for an already-refunded order
 - FastAPI demo and trace endpoints
+- CLI output for the timing summary
+- persisted timing telemetry in the JSONL trace and SQLite-backed summary payload
 
 ## What To Look At First
 
@@ -177,5 +188,4 @@ The tests cover:
 ## Future Expansion
 
 - replace JSON fixtures with a small service adapter layer
-- store richer per-step timing in the trace
 - support multiple workflow templates behind the same control surface

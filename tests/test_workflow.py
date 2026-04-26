@@ -20,6 +20,9 @@ def test_retry_and_auto_approval_path() -> None:
 
     assert summary["retries_used"] == 1
     assert summary["status"] == "approved"
+    assert summary["timing_summary"]["steps"][1]["step"] == "load_order_tool"
+    assert summary["timing_summary"]["steps"][1]["attempt"] == 1
+    assert summary["timing_summary"]["steps"][2]["attempt"] == 2
 
 
 def test_human_approval_path() -> None:
@@ -76,17 +79,20 @@ def test_run_persists_summary_trace_and_sqlite_record(tmp_path, monkeypatch) -> 
     ]
     assert trace_events
     assert {event["run_id"] for event in trace_events} == {summary["run_id"]}
+    assert all(event["duration_ms"] >= 0 for event in trace_events)
 
     connection = sqlite3.connect(storage.DB_PATH)
     try:
         row = connection.execute(
-            "select status, decision_reason from workflow_runs where run_id = ?",
+            "select run_payload from workflow_runs where run_id = ?",
             (summary["run_id"],),
         ).fetchone()
     finally:
         connection.close()
 
-    assert row == (summary["status"], summary["decision_reason"])
+    saved_payload = json.loads(row[0])
+    assert saved_payload["status"] == summary["status"]
+    assert saved_payload["timing_summary"]["slowest_step"]["duration_ms"] >= 0
 
 
 def test_manual_approval_resolution_updates_run_and_trace(tmp_path, monkeypatch) -> None:
@@ -121,3 +127,4 @@ def test_manual_approval_resolution_updates_run_and_trace(tmp_path, monkeypatch)
     ]
     assert trace_events[-1]["step"] == "manual_approval_action"
     assert trace_events[-1]["status"] == "approved"
+    assert resolved["timing_summary"]["steps"][-1]["step"] == "manual_approval_action"

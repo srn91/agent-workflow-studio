@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from typing import Literal
 
 
@@ -37,14 +37,19 @@ class WorkflowState:
     decision_reason: str | None = None
     resolution_actor: str | None = None
     resolution_note: str | None = None
+    trace_events: list["TraceEvent"] = field(default_factory=list)
 
 
 @dataclass(frozen=True)
 class TraceEvent:
     run_id: str
     step: str
+    attempt: int
     status: str
     detail: str
+    started_at: str
+    completed_at: str
+    duration_ms: float
 
     def to_dict(self) -> dict[str, object]:
         return asdict(self)
