@@ -1,0 +1,5 @@
+generated/
+.pytest_cache/
+.ruff_cache/
+__pycache__/
+PROJECT_CHECKLIST.md
