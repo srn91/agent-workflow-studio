@@ -184,8 +184,3 @@ The tests cover:
 - `app/tools.py` for the bounded tool surface
 - `app/storage.py` for the audit trail
 - `tests/test_workflow.py` for the three business branches plus manual approval resolution
-
-## Future Expansion
-
-- replace JSON fixtures with a small service adapter layer
-- support multiple workflow templates behind the same control surface
