@@ -1,0 +1,40 @@
+from __future__ import annotations
+
+from dataclasses import asdict, dataclass
+from typing import Literal
+
+
+RunStatus = Literal["approved", "needs_human_approval", "rejected"]
+
+
+@dataclass(frozen=True)
+class WorkflowRequest:
+    order_id: str
+    requested_amount: float
+    reason_code: str
+    simulate_order_lookup_failure: bool = True
+
+
+@dataclass
+class WorkflowState:
+    run_id: str
+    order_id: str
+    requested_amount: float
+    reason_code: str
+    simulate_order_lookup_failure: bool
+    retries_used: int = 0
+    order: dict[str, object] | None = None
+    policy: dict[str, object] | None = None
+    status: RunStatus | None = None
+    decision_reason: str | None = None
+
+
+@dataclass(frozen=True)
+class TraceEvent:
+    run_id: str
+    step: str
+    status: str
+    detail: str
+
+    def to_dict(self) -> dict[str, object]:
+        return asdict(self)
