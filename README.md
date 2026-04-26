@@ -6,6 +6,8 @@
 
 Refund and exception workflows are a poor fit for an open-ended agent loop. Operations teams need a flow that is easy to debug, easy to constrain, and explicit about when automation should stop and ask for human approval.
 
+In production, the value is not generic autonomy. The value is a single controlled lane that can evaluate one exception, explain why it made a decision, and stop cleanly when the policy says a human needs to look at it.
+
 This repo focuses on one workflow only:
 
 - a purchase-order exception arrives
@@ -30,6 +32,16 @@ flowchart TD
     H --> J
     I --> J
 ```
+
+## Execution Flow
+
+This repo is the "Hello World" version of an agent workflow:
+
+1. Input: a purchase-order exception request enters the system.
+2. Supervisor: the planner picks the only supported workflow path and decides whether a retry is allowed.
+3. Worker: local tools load order and policy context.
+4. Decision: the graph approves, rejects, or routes the request to human review.
+5. Output: a summary, trace, and SQLite run record are written for later inspection.
 
 ## Why This Shape
 
@@ -82,6 +94,8 @@ That command runs linting, tests, and a deterministic demo that writes:
 - `generated/workflow_summary.json`
 - `generated/workflow_trace.jsonl`
 - `generated/workflow_runs.sqlite3`
+
+If you only want the shortest version, `python3 -m app.cli demo` runs the same workflow without starting the API server.
 
 ### 3. Start the API
 
