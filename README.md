@@ -129,6 +129,13 @@ curl http://127.0.0.1:8005/runs/latest
 curl http://127.0.0.1:8005/runs/latest/trace
 ```
 
+## Hosted Deployment
+
+- Live URL: [agent-workflow-studio.onrender.com](https://agent-workflow-studio.onrender.com)
+- Open this first: [`/docs`](https://agent-workflow-studio.onrender.com/docs)
+- Browser smoke result: Swagger loaded cleanly in a real browser and exposed the health, demo run, custom run, latest run, and trace operations.
+- Render config: branch `main`, auto-deploy on commit, runtime `python`, build command `pip install -r requirements.txt`, start command `uvicorn app.main:app --host 0.0.0.0 --port $PORT`, health check path `/health`
+
 ## Validation
 
 The repo is only considered publishable when these checks pass:
