@@ -1,0 +1,20 @@
+[
+  {
+    "order_id": "ord_1001",
+    "customer_id": "cust_201",
+    "order_total": 249.0,
+    "already_refunded": false
+  },
+  {
+    "order_id": "ord_1002",
+    "customer_id": "cust_202",
+    "order_total": 85.0,
+    "already_refunded": false
+  },
+  {
+    "order_id": "ord_1003",
+    "customer_id": "cust_203",
+    "order_total": 32.5,
+    "already_refunded": true
+  }
+]

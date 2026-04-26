@@ -1,0 +1,10 @@
+{
+  "damaged_item": {
+    "auto_approval_limit": 100.0,
+    "approval_team": "refund_ops"
+  },
+  "late_delivery": {
+    "auto_approval_limit": 40.0,
+    "approval_team": "support_ops"
+  }
+}
