@@ -5,8 +5,8 @@ import json
 from fastapi import FastAPI, HTTPException
 
 from app.config import SUMMARY_PATH, TRACE_PATH
-from app.models import WorkflowRequest
-from app.workflow import run_workflow
+from app.models import ApprovalDecisionRequest, WorkflowRequest
+from app.workflow import resolve_approval, run_workflow
 
 
 app = FastAPI(
@@ -47,6 +47,16 @@ def run_demo() -> dict[str, object]:
 @app.get("/runs/latest")
 def latest_run() -> dict[str, object]:
     return _load_latest_summary()
+
+
+@app.post("/runs/{run_id}/approval")
+def approval_action(run_id: str, request: ApprovalDecisionRequest) -> dict[str, object]:
+    try:
+        return resolve_approval(run_id, request)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
 
 
 @app.get("/runs/latest/trace")

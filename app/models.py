@@ -5,6 +5,7 @@ from typing import Literal
 
 
 RunStatus = Literal["approved", "needs_human_approval", "rejected"]
+ApprovalAction = Literal["approve", "reject"]
 
 
 @dataclass(frozen=True)
@@ -13,6 +14,13 @@ class WorkflowRequest:
     requested_amount: float
     reason_code: str
     simulate_order_lookup_failure: bool = True
+
+
+@dataclass(frozen=True)
+class ApprovalDecisionRequest:
+    action: ApprovalAction
+    actor: str
+    note: str | None = None
 
 
 @dataclass
@@ -27,6 +35,8 @@ class WorkflowState:
     policy: dict[str, object] | None = None
     status: RunStatus | None = None
     decision_reason: str | None = None
+    resolution_actor: str | None = None
+    resolution_note: str | None = None
 
 
 @dataclass(frozen=True)

@@ -14,6 +14,7 @@ This repo focuses on one workflow only:
 - the supervisor plans the run
 - the worker loads the order and policy context with local tools
 - the graph either auto-approves, rejects, or pauses for human approval
+- an explicit reviewer action can later approve or reject the paused run through the API
 
 ## Architecture
 
@@ -28,7 +29,8 @@ flowchart TD
     F -->|amount over limit| G["Approval gate"]
     F -->|already refunded| H["Reject request"]
     F -->|within policy| I["Approve request"]
-    G --> J["Persist summary + JSONL trace + SQLite record"]
+    G --> K["Manual approval action endpoint"]
+    K --> J["Persist summary + JSONL trace + SQLite record"]
     H --> J
     I --> J
 ```
@@ -41,7 +43,8 @@ This repo is the "Hello World" version of an agent workflow:
 2. Supervisor: the planner picks the only supported workflow path and decides whether a retry is allowed.
 3. Worker: local tools load order and policy context.
 4. Decision: the graph approves, rejects, or routes the request to human review.
-5. Output: a summary, trace, and SQLite run record are written for later inspection.
+5. Resolution: paused runs can be resumed later by an explicit approve or reject action.
+6. Output: a summary, trace, and SQLite run record are written for later inspection.
 
 ## Why This Shape
 
@@ -73,7 +76,7 @@ generated/        # created after demo or API runs
 - This is intentionally one workflow, not a generic agent platform.
 - The tools are local JSON-backed lookups instead of external services so the repo stays deterministic.
 - The graph demonstrates control and auditability over breadth.
-- The approval gate is modeled as a status transition, not a full human task system.
+- The approval gate is modeled as a status transition plus one explicit resume action, not a full human task system.
 
 ## Run Steps
 
@@ -122,7 +125,19 @@ curl -X POST http://127.0.0.1:8005/runs \
   }'
 ```
 
-### 6. Inspect the latest run summary and filtered trace
+### 6. Resolve a paused run explicitly
+
+```bash
+curl -X POST http://127.0.0.1:8005/runs/run-id-here/approval \
+  -H "Content-Type: application/json" \
+  -d '{
+    "action": "approve",
+    "actor": "finance-manager",
+    "note": "Approved after manual exception review."
+  }'
+```
+
+### 7. Inspect the latest run summary and filtered trace
 
 ```bash
 curl http://127.0.0.1:8005/runs/latest
@@ -148,6 +163,7 @@ The tests cover:
 
 - retry then auto-approval
 - approval-gate routing
+- manual approval resolution through the API
 - reject path for an already-refunded order
 - FastAPI demo and trace endpoints
 
@@ -156,11 +172,10 @@ The tests cover:
 - `app/workflow.py` for the actual graph logic
 - `app/tools.py` for the bounded tool surface
 - `app/storage.py` for the audit trail
-- `tests/test_workflow.py` for the three business branches
+- `tests/test_workflow.py` for the three business branches plus manual approval resolution
 
 ## Next Steps
 
 - replace JSON fixtures with a small service adapter layer
 - store richer per-step timing in the trace
-- add a manual approval action endpoint
 - support multiple workflow templates behind the same control surface

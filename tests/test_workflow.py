@@ -4,8 +4,8 @@ import json
 import sqlite3
 
 import app.storage as storage
-from app.models import WorkflowRequest
-from app.workflow import run_workflow
+from app.models import ApprovalDecisionRequest, WorkflowRequest
+from app.workflow import resolve_approval, run_workflow
 
 
 def test_retry_and_auto_approval_path() -> None:
@@ -87,3 +87,37 @@ def test_run_persists_summary_trace_and_sqlite_record(tmp_path, monkeypatch) -> 
         connection.close()
 
     assert row == (summary["status"], summary["decision_reason"])
+
+
+def test_manual_approval_resolution_updates_run_and_trace(tmp_path, monkeypatch) -> None:
+    generated_dir = tmp_path / "generated"
+    monkeypatch.setattr(storage, "GENERATED_DIR", generated_dir)
+    monkeypatch.setattr(storage, "TRACE_PATH", generated_dir / "workflow_trace.jsonl")
+    monkeypatch.setattr(storage, "SUMMARY_PATH", generated_dir / "workflow_summary.json")
+    monkeypatch.setattr(storage, "DB_PATH", generated_dir / "workflow_runs.sqlite3")
+
+    pending = run_workflow(
+        WorkflowRequest(
+            order_id="ord_1001",
+            requested_amount=250.0,
+            reason_code="damaged_item",
+            simulate_order_lookup_failure=False,
+        )
+    )
+
+    resolved = resolve_approval(
+        pending["run_id"],
+        ApprovalDecisionRequest(action="approve", actor="ops-lead", note="VIP exception cleared."),
+    )
+
+    assert resolved["status"] == "approved"
+    assert resolved["resolution_actor"] == "ops-lead"
+    assert resolved["resolution_note"] == "VIP exception cleared."
+
+    trace_events = [
+        json.loads(line)
+        for line in storage.TRACE_PATH.read_text(encoding="utf-8").splitlines()
+        if line.strip()
+    ]
+    assert trace_events[-1]["step"] == "manual_approval_action"
+    assert trace_events[-1]["status"] == "approved"
