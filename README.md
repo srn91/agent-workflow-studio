@@ -14,7 +14,7 @@ This repo focuses on one workflow only:
 - the supervisor plans the run
 - the worker loads the order and policy context with local tools
 - the graph either auto-approves, rejects, or pauses for human approval
-- an explicit reviewer action can later approve or reject the paused run through the API
+- an explicit human action can later approve or reject the paused run through the API
 
 ## Architecture
 
@@ -134,7 +134,7 @@ curl -X POST http://127.0.0.1:8005/runs/run-id-here/approval \
   -d '{
     "action": "approve",
     "actor": "finance-manager",
-    "note": "Approved after manual exception review."
+    "note": "Approved after manual policy review."
   }'
 ```
 
