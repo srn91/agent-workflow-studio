@@ -195,7 +195,7 @@ The tests cover:
 - CLI output for the timing summary
 - persisted timing telemetry in the JSONL trace and SQLite-backed summary payload
 
-## What To Look At First
+## Key Files
 
 - `app/workflow.py` for the actual graph logic
 - `app/tools.py` for the bounded tool surface
