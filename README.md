@@ -17,7 +17,6 @@
 
 - Agentic AI can be constrained into auditable workflow automation instead of unrestricted chat behavior.
 - The system has clear stop conditions, bounded tools, retry handling, trace logs, and human approval points.
-- The repo maps directly to GenAI Engineer, Agentic AI Engineer, Workflow Automation, and AI Backend roles.
 
 ## Problem
 
