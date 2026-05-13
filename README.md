@@ -2,9 +2,9 @@
 
 `agent-workflow-studio` is a narrow workflow-orchestration demo for purchase-order exception triage. It shows how a supervisor/worker graph can route one business workflow through bounded local tools, one retry branch, one human approval gate, and an auditable execution trace with per-step timing.
 
-## Proof Snapshot
+## Results
 
-| Signal | Current evidence |
+| Area | Details |
 |---|---|
 | Controlled agent path | The workflow supports one supervised business lane: plan, load order, load policy, approve/reject/pause, and persist the result. |
 | Human-in-the-loop control | Requests above policy limits pause at an approval gate and resume only through an explicit `/runs/{run_id}/approval` action. |
@@ -13,7 +13,7 @@
 | Timing telemetry | The summary includes total duration, slowest step, attempt counts, statuses, and per-step durations for operational review. |
 | Test coverage | Tests cover retry-to-approval, approval-gate routing, manual approval resolution, reject path, FastAPI endpoints, CLI output, and persisted telemetry. |
 
-## What This Proves
+## Overview
 
 - Agentic AI can be constrained into auditable workflow automation instead of unrestricted chat behavior.
 - The system has clear stop conditions, bounded tools, retry handling, trace logs, and human approval points.
