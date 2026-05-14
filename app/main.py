@@ -34,17 +34,27 @@ def index() -> str:
 <html lang="en">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Agent Workflow Studio</title>
-<style>body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif;max-width:860px;margin:48px auto;padding:0 24px;line-height:1.5;color:#111}a{color:#0645ad}</style></head>
-<body>
-<h1>Agent Workflow Studio</h1>
+<style>
+body{margin:0;background:#f8fafc;color:#0f172a;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif;line-height:1.5}
+main{max-width:1080px;margin:0 auto;padding:56px 24px}.hero{background:linear-gradient(135deg,#111827,#1d4ed8);color:white;border-radius:22px;padding:38px;box-shadow:0 24px 60px rgba(15,23,42,.18)}
+.eyebrow{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#bfdbfe;font-weight:700}h1{font-size:42px;line-height:1.05;margin:10px 0 14px}.hero p{font-size:17px;color:#dbeafe;max-width:780px}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:22px 0}.card{background:white;border:1px solid #e2e8f0;border-radius:16px;padding:18px;box-shadow:0 10px 30px rgba(15,23,42,.06)}
+.metric{font-size:25px;font-weight:800;color:#0f172a}.label{font-size:13px;color:#64748b;margin-top:3px}.links{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}
+a.button{background:#0f172a;color:white;text-decoration:none;padding:11px 14px;border-radius:10px;font-weight:700}a.secondary{background:white;color:#0f172a;border:1px solid #cbd5e1}
+@media(max-width:800px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}h1{font-size:34px}}
+</style></head>
+<body><main>
+<section class="hero"><div class="eyebrow">Agent workflow control</div><h1>Agent Workflow Studio</h1>
 <p>Workflow orchestration service with bounded tools, retry handling, approval gates, persisted run records, and trace output.</p>
-<h2>Open endpoints</h2>
-<ul>
-<li><a href="/docs">Interactive API docs</a></li>
-<li><a href="/health">Health check</a></li>
-</ul>
-<p>Use <code>POST /runs/demo</code> from the API docs to create a deterministic run, then inspect <code>/runs/latest</code> and <code>/runs/latest/trace</code>.</p>
-</body></html>"""
+<div class="links"><a class="button" href="/docs">Run demo from API docs</a><a class="button secondary" href="/runs/latest">Latest run</a><a class="button secondary" href="/runs/latest/trace">Latest trace</a></div></section>
+<section class="grid">
+<div class="card"><div class="metric">retry</div><div class="label">tool failure handling</div></div>
+<div class="card"><div class="metric">approval</div><div class="label">human gate path</div></div>
+<div class="card"><div class="metric">JSONL</div><div class="label">execution trace</div></div>
+<div class="card"><div class="metric">SQLite</div><div class="label">run records</div></div>
+</section>
+<section class="card"><p>Use the API docs to run a deterministic workflow, then inspect the latest run summary and trace to see the control flow.</p></section>
+</main></body></html>"""
 
 
 @app.post("/runs")
