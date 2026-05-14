@@ -18,6 +18,18 @@ def _configure_generated_paths(tmp_path: Path, monkeypatch) -> None:
     monkeypatch.setattr(main, "SUMMARY_PATH", generated_dir / "workflow_summary.json")
 
 
+def test_root_endpoint_lists_public_api_paths() -> None:
+    client = TestClient(main.app)
+
+    response = client.get("/")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["project"] == "agent-workflow-studio"
+    assert payload["status"] == "ready"
+    assert payload["endpoints"]["docs"] == "/docs"
+
+
 def test_demo_run_and_trace_endpoints(tmp_path, monkeypatch) -> None:
     _configure_generated_paths(tmp_path, monkeypatch)
     client = TestClient(main.app)

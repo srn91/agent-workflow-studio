@@ -27,6 +27,21 @@ def health() -> dict[str, str]:
     return {"status": "ok"}
 
 
+@app.get("/")
+def index() -> dict[str, object]:
+    return {
+        "project": "agent-workflow-studio",
+        "status": "ready",
+        "endpoints": {
+            "health": "/health",
+            "demo_run": "/runs/demo",
+            "latest_run": "/runs/latest",
+            "latest_trace": "/runs/latest/trace",
+            "docs": "/docs",
+        },
+    }
+
+
 @app.post("/runs")
 def run_custom(request: WorkflowRequest) -> dict[str, object]:
     return run_workflow(request)
