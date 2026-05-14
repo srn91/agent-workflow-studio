@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import HTMLResponse
 
 from app.config import SUMMARY_PATH, TRACE_PATH
 from app.models import ApprovalDecisionRequest, WorkflowRequest
@@ -27,19 +28,23 @@ def health() -> dict[str, str]:
     return {"status": "ok"}
 
 
-@app.get("/")
-def index() -> dict[str, object]:
-    return {
-        "project": "agent-workflow-studio",
-        "status": "ready",
-        "endpoints": {
-            "health": "/health",
-            "demo_run": "/runs/demo",
-            "latest_run": "/runs/latest",
-            "latest_trace": "/runs/latest/trace",
-            "docs": "/docs",
-        },
-    }
+@app.get("/", response_class=HTMLResponse)
+def index() -> str:
+    return """<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent Workflow Studio</title>
+<style>body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif;max-width:860px;margin:48px auto;padding:0 24px;line-height:1.5;color:#111}a{color:#0645ad}</style></head>
+<body>
+<h1>Agent Workflow Studio</h1>
+<p>Workflow orchestration service with bounded tools, retry handling, approval gates, persisted run records, and trace output.</p>
+<h2>Open endpoints</h2>
+<ul>
+<li><a href="/docs">Interactive API docs</a></li>
+<li><a href="/health">Health check</a></li>
+</ul>
+<p>Use <code>POST /runs/demo</code> from the API docs to create a deterministic run, then inspect <code>/runs/latest</code> and <code>/runs/latest/trace</code>.</p>
+</body></html>"""
 
 
 @app.post("/runs")

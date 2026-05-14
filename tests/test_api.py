@@ -24,10 +24,9 @@ def test_root_endpoint_lists_public_api_paths() -> None:
     response = client.get("/")
 
     assert response.status_code == 200
-    payload = response.json()
-    assert payload["project"] == "agent-workflow-studio"
-    assert payload["status"] == "ready"
-    assert payload["endpoints"]["docs"] == "/docs"
+    assert "text/html" in response.headers["content-type"]
+    assert "Agent Workflow Studio" in response.text
+    assert "/docs" in response.text
 
 
 def test_demo_run_and_trace_endpoints(tmp_path, monkeypatch) -> None:
