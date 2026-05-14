@@ -171,7 +171,8 @@ The trace endpoint returns both the filtered JSONL events and the same run-level
 
 ## Hosted Deployment
 
-- Live API: [`/docs`](https://agent-workflow-studio.onrender.com/docs)
+- Live demo: [agent-workflow-studio.onrender.com](https://agent-workflow-studio.onrender.com)
+- API docs: [`/docs`](https://agent-workflow-studio.onrender.com/docs)
 - Browser smoke result: Swagger loaded cleanly in a real browser and exposed the health, demo run, custom run, latest run, and trace operations.
 - Render config: branch `main`, auto-deploy on commit, runtime `python`, build command `pip install -r requirements.txt`, start command `uvicorn app.main:app --host 0.0.0.0 --port $PORT`, health check path `/health`
 
